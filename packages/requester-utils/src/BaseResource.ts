@@ -1,8 +1,7 @@
-import { RateLimitOptions, RequesterType, ResourceOptions } from './RequesterUtils';
+import { RateLimitOptions, RequesterType, RequesterFunction } from './RequesterUtils';
 
 export interface RootResourceOptions<C> {
-  // TODO: Not actually optional - Need to fix wrapper typing in requestUtils.ts:
-  requesterFn?: (resourceOptions: ResourceOptions) => RequesterType;
+  requesterFn: RequesterFunction;
   host?: string;
   prefixUrl?: string;
   rejectUnauthorized?: boolean;

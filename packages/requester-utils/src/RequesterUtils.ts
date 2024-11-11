@@ -83,10 +83,12 @@ export interface RequesterType {
   ): Promise<FormattedResponse<T>>;
 }
 
-export type RequestHandlerFn<T extends ResponseBodyTypes = ResponseBodyTypes> = (
+export type RequestHandlerFunction<T extends ResponseBodyTypes = ResponseBodyTypes> = (
   endpoint: string,
   options?: Record<string, unknown>,
 ) => Promise<FormattedResponse<T>>;
+
+export type RequesterFunction = (resourceOptions: ResourceOptions) => RequesterType
 
 // Utility methods
 export function generateRateLimiterFn(limit: number, interval: number) {
@@ -104,7 +106,7 @@ export function formatQuery(params: Record<string, unknown> = {}): string {
   return stringify(decamelized, { arrayFormat: 'brackets' });
 }
 
-export type OptionsHandlerFn = (
+export type OptionsHandlerFunction = (
   serviceOptions: ResourceOptions,
   requestOptions: RequestOptions,
 ) => Promise<RequestOptions>;
@@ -173,9 +175,9 @@ export function createRateLimiters(rateLimitOptions: RateLimitOptions = {}) {
 }
 
 export function createRequesterFn(
-  optionsHandler: OptionsHandlerFn,
-  requestHandler: RequestHandlerFn,
-): (serviceOptions: ResourceOptions) => RequesterType {
+  optionsHandler: OptionsHandlerFunction,
+  requestHandler: RequestHandlerFunction,
+): RequesterFunction {
   const methods = ['get', 'post', 'put', 'patch', 'delete'];
 
   return (serviceOptions) => {

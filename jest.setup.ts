@@ -1,10 +1,15 @@
-import 'jest-extended';
-import 'jest-extended/all';
-
 import { expect } from '@jest/globals';
-import type {MatcherFunction} from 'expect';
+import type { MatcherFunction } from 'expect';
+import * as extendedMatchers from 'jest-extended';
 
-const toThrowWith: MatcherFunction<[cb:unknown]> = async function (expectCallbackOrPromiseReturn, matcherCallback) {
+// Include extended matchers
+expect.extend(extendedMatchers);
+
+// Include custom matcher
+const toThrowWith: MatcherFunction<[cb: unknown]> = async function (
+  expectCallbackOrPromiseReturn,
+  matcherCallback,
+) {
   const isFromReject = this && this.promise === 'rejects'; // See https://github.com/facebook/jest/pull/7621#issue-244312550
   if ((!expectCallbackOrPromiseReturn || typeof expectCallbackOrPromiseReturn !== 'function') && !isFromReject) {
     return {
@@ -22,8 +27,8 @@ const toThrowWith: MatcherFunction<[cb:unknown]> = async function (expectCallbac
     };
   }
 
-
   let error;
+
   if (isFromReject) {
     error = expectCallbackOrPromiseReturn;
   } else {
@@ -46,7 +51,7 @@ const toThrowWith: MatcherFunction<[cb:unknown]> = async function (expectCallbac
   } else {
     return {
       pass: true,
-      message: () => 'Expected the function not to throw an error"
+      message: () => 'Expected the function not to throw an error'
     };
   }
 }
@@ -55,19 +60,7 @@ expect.extend({
   toThrowWith,
 });
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace jest {
-    interface AsymmetricMatchers {
-      toThrowWith(cb: (error: Error) => void): void;
-    }
-    interface Matchers<R> {
-      toThrowWith(cb: (error: Error) => void): R;
-    }
-  }
-}
-
-declare module "expect" {
+declare module 'expect' {
   interface AsymmetricMatchers {
     toThrowWith(cb: (error: Error) => void): void;
   }

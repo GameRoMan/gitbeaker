@@ -119,18 +119,15 @@ describe('defaultRequestHandler', () => {
       ),
     );
 
-    // Ensure an assertion is made (the error is thrown)
-    expect.assertions(2);
-
-    try {
-      await defaultRequestHandler('http://test.com', {} as RequestOptions);
-    } catch (e) {
-      expect(e.message).toBe('Really Bad Error');
-      expect(e).toBeInstanceOf(GitbeakerRequestError);
-    }
+    await expect(() => defaultRequestHandler('http://test.com')).rejects.toThrowWith(
+      (e: GitbeakerRequestError) => {
+        expect(e.message).toBe('Really Bad Error');
+        expect(e).toBeInstanceOf(GitbeakerRequestError);
+      },
+    );
   });
 
-  it.only('should return an error with the response included in the cause', async () => {
+  it('should return an error with the response included in the cause', async () => {
     const responseContent = { error: 'msg' };
 
     MockFetch.mockReturnValueOnce(
@@ -145,29 +142,12 @@ describe('defaultRequestHandler', () => {
       ),
     );
 
-    // Ensure an assertion is made (the error is thrown)
-
-    // await expect(() => defaultRequestHandler('http://test.com', {} as RequestOptions)).rejects.toThrow(
-    //   expect.objectContaining({
-    //     name: "GitbeakerRequestError",
-    //     message: 'Really Bad Error',
-    //     cause: {
-    //       response: expect.any(Response),
-    //     },
-    //   }),
-    // );
-
-    await expect(() => Promise.reject(new Error(''))).rejects.toThrowWithMessage(Error, 'test');
-
-    // await expect(() => Promise.reject(new Error(''))).rejects.toThrowWith((e: GitbeakerRequestError) => {
-    //   expect(e.message).toBe('Really Bad Error');
-    //   expect(e?.cause?.response).toBeInstanceOf(Response);
-    // });
-
-    // await expect(() => defaultRequestHandler('http://test.com')).rejects.toThrowWith((e: GitbeakerRequestError) => {
-    //   expect(e.message).toBe('Really Bad Error');
-    //   expect(e?.cause?.response).toBeInstanceOf(Response);
-    // });
+    await expect(() => defaultRequestHandler('http://test.com')).rejects.toThrowWith(
+      (e: GitbeakerRequestError) => {
+        expect(e.message).toBe('Really Bad Error');
+        expect(e?.cause?.response).toBeInstanceOf(Response);
+      },
+    );
   });
 
   it('should return an error with the request included in the cause', async () => {
@@ -185,15 +165,12 @@ describe('defaultRequestHandler', () => {
       ),
     );
 
-    // Ensure an assertion is made (the error is thrown)
-    expect.assertions(2);
-
-    try {
-      await defaultRequestHandler('http://test.com', {} as RequestOptions);
-    } catch (e) {
-      expect(e.message).toBe('Really Bad Error');
-      expect(e.cause.request).toBeInstanceOf(Request);
-    }
+    await expect(() => defaultRequestHandler('http://test.com')).rejects.toThrowWith(
+      (e: GitbeakerRequestError) => {
+        expect(e.message).toBe('Really Bad Error');
+        expect(e?.cause?.request).toBeInstanceOf(Request);
+      },
+    );
   });
 
   it("should return an error with a description property derived from the response's error property when response is JSON", async () => {
@@ -211,15 +188,11 @@ describe('defaultRequestHandler', () => {
       ),
     );
 
-    // Ensure an assertion is made (the error is thrown)
-    expect.assertions(2);
-
-    try {
-      await defaultRequestHandler('http://test.com', {} as RequestOptions);
-    } catch (e) {
-      expect(e.cause.description).toBe('msg');
-      expect(e).toBeInstanceOf(GitbeakerRequestError);
-    }
+    await expect(() => defaultRequestHandler('http://test.com')).rejects.toThrowWith(
+      (e: GitbeakerRequestError) => {
+        expect(e?.cause?.description).toBe('msg');
+      },
+    );
   });
 
   it("should return an error with a description property derived from the response's message property when response is JSON", async () => {
@@ -237,15 +210,11 @@ describe('defaultRequestHandler', () => {
       ),
     );
 
-    // Ensure an assertion is made (the error is thrown)
-    expect.assertions(2);
-
-    try {
-      await defaultRequestHandler('http://test.com', {} as RequestOptions);
-    } catch (e) {
-      expect(e.cause.description).toBe('msg');
-      expect(e).toBeInstanceOf(GitbeakerRequestError);
-    }
+    await expect(() => defaultRequestHandler('http://test.com')).rejects.toThrowWith(
+      (e: GitbeakerRequestError) => {
+        expect(e?.cause?.description).toBe('msg');
+      },
+    );
   });
 
   it('should return an error with the plain response text if response is not JSON', async () => {
@@ -263,15 +232,11 @@ describe('defaultRequestHandler', () => {
       ),
     );
 
-    // Ensure an assertion is made (the error is thrown)
-    expect.assertions(2);
-
-    try {
-      await defaultRequestHandler('http://test.com', {} as RequestOptions);
-    } catch (e) {
-      expect(e.cause.description).toBe(responseContent);
-      expect(e).toBeInstanceOf(GitbeakerRequestError);
-    }
+    await expect(() => defaultRequestHandler('http://test.com')).rejects.toThrowWith(
+      (e: GitbeakerRequestError) => {
+        expect(e?.cause?.description).toBe(responseContent);
+      },
+    );
   });
 
   it('should return an error with a message "Query timeout was reached" if fetch throws a TimeoutError', async () => {
@@ -284,15 +249,12 @@ describe('defaultRequestHandler', () => {
 
     MockFetch.mockRejectedValueOnce(new TimeoutError('Hit timeout'));
 
-    // Ensure an assertion is made (the error is thrown)
-    expect.assertions(2);
-
-    try {
-      await defaultRequestHandler('http://test.com', {} as RequestOptions);
-    } catch (e) {
-      expect(e.message).toBe('Query timeout was reached');
-      expect(e).toBeInstanceOf(GitbeakerTimeoutError);
-    }
+    await expect(() => defaultRequestHandler('http://test.com')).rejects.toThrowWith(
+      (e: GitbeakerTimeoutError) => {
+        expect(e.message).toBe('Query timeout was reached');
+        expect(e).toBeInstanceOf(GitbeakerTimeoutError);
+      },
+    );
   });
 
   it('should return an error with a message "Query timeout was reached" if fetch throws a AbortError', async () => {
@@ -305,15 +267,12 @@ describe('defaultRequestHandler', () => {
 
     MockFetch.mockRejectedValueOnce(new AbortError('Abort signal triggered'));
 
-    // Ensure an assertion is made (the error is thrown)
-    expect.assertions(2);
-
-    try {
-      await defaultRequestHandler('http://test.com', {} as RequestOptions);
-    } catch (e) {
-      expect(e.message).toBe('Query timeout was reached');
-      expect(e).toBeInstanceOf(GitbeakerTimeoutError);
-    }
+    await expect(() => defaultRequestHandler('http://test.com')).rejects.toThrowWith(
+      (e: GitbeakerTimeoutError) => {
+        expect(e.message).toBe('Query timeout was reached');
+        expect(e).toBeInstanceOf(GitbeakerTimeoutError);
+      },
+    );
   });
 
   it('should return an unchanged error if fetch throws an error thats not an AbortError or TimeoutError', async () => {
@@ -326,15 +285,12 @@ describe('defaultRequestHandler', () => {
 
     MockFetch.mockRejectedValueOnce(new RandomError('Random Error'));
 
-    // Ensure an assertion is made (the error is thrown)
-    expect.assertions(2);
-
-    try {
-      await defaultRequestHandler('http://test.com', {} as RequestOptions);
-    } catch (e) {
-      expect(e.message).toBe('Random Error');
-      expect(e).toBeInstanceOf(RandomError);
-    }
+    await expect(() => defaultRequestHandler('http://test.com')).rejects.toThrowWith(
+      (e: RandomError) => {
+        expect(e.message).toBe('Random Error');
+        expect(e).toBeInstanceOf(RandomError);
+      },
+    );
   });
 
   it('should retry request if a 429 retry code is returned', async () => {
@@ -432,17 +388,14 @@ describe('defaultRequestHandler', () => {
     // Mock return
     MockFetch.mockReturnValue(fakeReturnValue);
 
-    // Ensure an assertion is made (the error is thrown)
-    expect.assertions(2);
-
-    try {
-      await defaultRequestHandler('http://test.com', {} as RequestOptions);
-    } catch (e) {
-      expect(e.message).toBe(
-        'Could not successfully complete this request after 10 retries, last status code: 429. Check the applicable rate limits for this endpoint.',
-      );
-      expect(e).toBeInstanceOf(GitbeakerRetryError);
-    }
+    await expect(() => defaultRequestHandler('http://test.com')).rejects.toThrowWith(
+      (e: GitbeakerRetryError) => {
+        expect(e.message).toBe(
+          'Could not successfully complete this request after 10 retries, last status code: 429. Check the applicable rate limits for this endpoint.',
+        );
+        expect(e).toBeInstanceOf(GitbeakerRetryError);
+      },
+    );
 
     MockFetch.mockRestore();
   });

@@ -1,5 +1,4 @@
 import { expect } from '@jest/globals';
-import type { RequestOptions } from '@gitbeaker/requester-utils';
 import {
   GitbeakerRequestError,
   GitbeakerRetryError,
@@ -323,7 +322,7 @@ describe('defaultRequestHandler', () => {
     MockFetch.mockReturnValue(fakeFailedReturnValue);
     MockFetch.mockReturnValue(fakeSuccessfulReturnValue);
 
-    const output = await defaultRequestHandler('http://test.com', {} as RequestOptions);
+    const output = await defaultRequestHandler('http://test.com', {});
 
     expect(output).toMatchObject({
       body: {},
@@ -362,7 +361,7 @@ describe('defaultRequestHandler', () => {
     MockFetch.mockReturnValue(fakeFailedReturnValue);
     MockFetch.mockReturnValue(fakeSuccessfulReturnValue);
 
-    const output = await defaultRequestHandler('http://test.com', {} as RequestOptions);
+    const output = await defaultRequestHandler('http://test.com', {});
 
     expect(output).toMatchObject({
       body: {},
@@ -413,7 +412,7 @@ describe('defaultRequestHandler', () => {
       ),
     );
 
-    const output = await defaultRequestHandler('http://test.com', {} as RequestOptions);
+    const output = await defaultRequestHandler('http://test.com', {});
 
     expect(output).toMatchObject({
       body: {},
@@ -437,7 +436,7 @@ describe('defaultRequestHandler', () => {
 
     const output = await defaultRequestHandler('http://test.com', {
       asStream: true,
-    } as RequestOptions);
+    });
 
     expect(output).toMatchObject({
       body: expect.any(ReadableStream),
@@ -465,7 +464,7 @@ describe('defaultRequestHandler', () => {
 
     await defaultRequestHandler('testurl', {
       prefixUrl: 'http://test.com',
-    } as RequestOptions);
+    });
 
     const request = new Request(new URL('http://test.com/testurl'), { mode: undefined });
 
@@ -488,7 +487,7 @@ describe('defaultRequestHandler', () => {
     await defaultRequestHandler('testurl/123', {
       searchParams: 'test=4',
       prefixUrl: 'http://test.com',
-    } as RequestOptions);
+    });
 
     const request = new Request(new URL('http://test.com/testurl/123?test=4'), { mode: undefined });
 
@@ -538,8 +537,8 @@ describe('defaultRequestHandler', () => {
   });
 
   it('should handle multipart prefixUrls correctly', async () => {
-    MockFetch.mockReturnValue(
-      Promise.resolve(
+    MockFetch.mockImplementation(() => {
+      return Promise.resolve(
         new Response(JSON.stringify({}), {
           status: 200,
           statusText: 'Good',
@@ -547,13 +546,13 @@ describe('defaultRequestHandler', () => {
             'content-type': 'application/json',
           },
         }),
-      ),
-    );
+      );
+    });
 
     await defaultRequestHandler('testurl/123', {
       searchParams: 'test=4',
       prefixUrl: 'http://test.com/projects',
-    } as RequestOptions);
+    });
 
     const request = new Request(new URL('http://test.com/projects/testurl/123?test=4'), {
       mode: undefined,
@@ -564,7 +563,7 @@ describe('defaultRequestHandler', () => {
     await defaultRequestHandler('123/testurl', {
       searchParams: 'test=4',
       prefixUrl: 'http://test.com/projects',
-    } as RequestOptions);
+    });
 
     const request2 = new Request(new URL('http://test.com/projects/123/testurl?test=4'), {
       mode: undefined,
@@ -575,7 +574,7 @@ describe('defaultRequestHandler', () => {
     await defaultRequestHandler('123/testurl', {
       searchParams: 'test=4',
       prefixUrl: 'http://test.com/projects/',
-    } as RequestOptions);
+    });
 
     const request3 = new Request(new URL('http://test.com/projects/123/testurl?test=4'), {
       mode: undefined,

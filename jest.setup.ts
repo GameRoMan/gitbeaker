@@ -46,7 +46,7 @@ const toThrowWith: MatcherFunction<[cb: unknown]> = async function (
   if (!error) {
     return {
       pass: false,
-      message: () => 'Expected the function to throw an error.\n' + "But it didn't throw anything.",
+      message: () => "Expected the function to throw an error.\nBut it didn't throw anything.",
     };
   } else {
     return {

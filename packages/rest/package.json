@@ -58,6 +58,7 @@
     "@gitbeaker/requester-utils": "^42.0.2"
   },
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
     "@playwright/test": "^1.45.1",
     "@types/node": "^20.14.10",
     "tsup": "^8.1.0",

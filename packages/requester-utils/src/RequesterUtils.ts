@@ -88,7 +88,7 @@ export type RequestHandlerFunction<T extends ResponseBodyTypes = ResponseBodyTyp
   options?: Record<string, unknown>,
 ) => Promise<FormattedResponse<T>>;
 
-export type RequesterFunction = (resourceOptions: ResourceOptions) => RequesterType
+export type RequesterFunction = (resourceOptions: ResourceOptions) => RequesterType;
 
 // Utility methods
 export function generateRateLimiterFn(limit: number, interval: number) {

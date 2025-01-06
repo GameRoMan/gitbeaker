@@ -1,10 +1,17 @@
 import { BaseResource } from '../../src/BaseResource';
 import { createRequesterFn } from '../../src/RequesterUtils';
-import type {  OptionsHandlerFunction, RequesterFunction, RequestHandlerFunction }  from '../../src/RequesterUtils';
+import type {
+  OptionsHandlerFunction,
+  RequestHandlerFunction,
+  RequesterFunction,
+} from '../../src/RequesterUtils';
 
 describe('Creation of BaseResource instance', () => {
   it('should default host to https://gitlab.com/api/v4/', () => {
-    const service = new BaseResource({ requesterFn: jest.fn() as jest.MockedFunction<RequesterFunction>, token: 'test' });
+    const service = new BaseResource({
+      requesterFn: jest.fn() as jest.MockedFunction<RequesterFunction>,
+      token: 'test',
+    });
 
     expect(service.url).toBe('https://gitlab.com/api/v4/');
   });
@@ -20,7 +27,11 @@ describe('Creation of BaseResource instance', () => {
   });
 
   it('should allow a camelize option to set', () => {
-    const service = new BaseResource({ token: '123', requesterFn: jest.fn() as jest.MockedFunction<RequesterFunction>, camelize: true });
+    const service = new BaseResource({
+      token: '123',
+      requesterFn: jest.fn() as jest.MockedFunction<RequesterFunction>,
+      camelize: true,
+    });
 
     expect(service.camelize).toBe(true);
   });
@@ -158,7 +169,10 @@ describe('Creation of BaseResource instance', () => {
   });
 
   it('should default the queryTimeout to 300s', () => {
-    const service = new BaseResource({ token: '123', requesterFn: jest.fn() as jest.MockedFunction<RequesterFunction> });
+    const service = new BaseResource({
+      token: '123',
+      requesterFn: jest.fn() as jest.MockedFunction<RequesterFunction>,
+    });
 
     expect(service.queryTimeout).toBe(300000);
   });
@@ -174,13 +188,21 @@ describe('Creation of BaseResource instance', () => {
   });
 
   it('should allow for the sudo user to be set', () => {
-    const service = new BaseResource({ token: '123', requesterFn: jest.fn() as jest.MockedFunction<RequesterFunction>, sudo: 'test' });
+    const service = new BaseResource({
+      token: '123',
+      requesterFn: jest.fn() as jest.MockedFunction<RequesterFunction>,
+      sudo: 'test',
+    });
 
     expect(service.headers.Sudo).toBe('test');
   });
 
   it('should allow for prefix resource urls to be set', () => {
-    const service = new BaseResource({ token: '123', requesterFn: jest.fn() as jest.MockedFunction<RequesterFunction>, prefixUrl: 'test' });
+    const service = new BaseResource({
+      token: '123',
+      requesterFn: jest.fn() as jest.MockedFunction<RequesterFunction>,
+      prefixUrl: 'test',
+    });
 
     expect(service.url).toBe('https://gitlab.com/api/v4/test');
   });
@@ -212,7 +234,7 @@ describe('Creation of BaseResource instance', () => {
 
   it('should set the internal requester based on the required requesterFn parameter', async () => {
     const requestHandler = jest.fn() as jest.MockedFunction<RequestHandlerFunction>;
-    const optionsHandler = jest.fn() as jest.MockedFunction<OptionsHandlerFunction>
+    const optionsHandler = jest.fn() as jest.MockedFunction<OptionsHandlerFunction>;
 
     const requesterFn = createRequesterFn(optionsHandler, requestHandler);
     const serviceA = new BaseResource({ token: '123', requesterFn, prefixUrl: 'test' });

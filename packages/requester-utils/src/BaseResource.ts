@@ -1,4 +1,4 @@
-import { RateLimitOptions, RequesterType, RequesterFunction } from './RequesterUtils';
+import { RateLimitOptions, RequesterFunction, RequesterType } from './RequesterUtils';
 
 export interface RootResourceOptions<C> {
   requesterFn: RequesterFunction;
